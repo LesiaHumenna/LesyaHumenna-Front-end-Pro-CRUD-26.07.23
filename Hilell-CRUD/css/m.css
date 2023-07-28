@@ -1,0 +1,55 @@
+.container {
+    max-width      : 500px;
+    display        : flex;
+    flex-direction : row;
+    justify-content: space-around;
+    margin         : 0px auto;
+    gap            : 50%;
+}
+
+body {
+    font-family: sans-serif;
+    margin     : 0 50px;
+}
+
+.container {
+    display: flex;
+    gap    : 50px;
+}
+
+#users {
+    width: 400px;
+}
+
+i {
+    cursor: pointer;
+}
+
+#users div {
+    display        : flex;
+    align-items    : center;
+    justify-content: space-between;
+}
+
+.options {
+    display: flex;
+    gap    : 25px;
+}
+
+#msg {
+    color: red;
+}
+
+ul,
+li {
+    list-style: none;
+}
+h2{
+    text-align: center;
+}
+#btn,
+h2,
+label,
+p {
+    color: rgb(17, 17, 175);
+}
