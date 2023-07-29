@@ -19,6 +19,7 @@ body {
 
 #users {
     width: 400px;
+    display: block;
 }
 
 i {

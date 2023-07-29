@@ -4,7 +4,7 @@ const newEmailInput = document.getElementById("newEmail");
 const newAgeInput = document.getElementById("newAge");
 const msg = document.getElementById("msg");
 const usersList = document.getElementById("users");
-
+const btn = document.getElementById("btn");
 class user {
   constructor(id, name, age, email) {
     this.id = id;
@@ -44,8 +44,9 @@ function addNewUser() {
   const newUser = new user(id, newName, newAge, newEmail);
   users.push(newUser);
   updateLocalStorage();
-  displayUser(newUser);
   acceptData();
+  displayUser();
+  
   newNameInput.value = "";
   newEmailInput.value = "";
   newAgeInput.value = "";
@@ -61,6 +62,8 @@ form.addEventListener("submit", (e) => {
 function updateLocalStorage() {
   localStorage.setItem("users", JSON.stringify(users));
 }
+updateLocalStorage();
+//
 //виводимо дані newUser на console
 let data = {};
 let acceptData = () => {
@@ -72,7 +75,7 @@ let acceptData = () => {
 };
 //розмістити наші вхідні дані =>right
 let displayUser = () => {
-  usersList.innerHTML = "";
+   usersList.innerHTML = "";
   users.forEach((user) => {
     usersList.innerHTML += `
     <h3>Список користувачів:</h3>
@@ -96,24 +99,31 @@ function viewUser(userEl) {
 `;
 }
 // Редагування користувача
+let editedUserId = null;
 function editUser(userEl) {
   const userId = userEl.dataset.id;
   const user = users.find((u) => u.id == userId);
-
-  newNameInput.value = user.name;
-  newEmailInput.value = user.email;
-  newAgeInput.value = user.age;
-}
+  if (user) {
+    newNameInput.value = user.name;
+    newEmailInput.value = user.email;
+    newAgeInput.value = user.age;
+    editedUserId = userId;
+  }
+};
 // Збереження змін
 function saveEditedUser() {
-  const editedUser = {
-    id: user,
-    name: newNameInput.value,
-    email: newEmailInput.value,
-    age: newAgeInput.value,
-  };
-  updateLocalStorage();
-  displayUser(e);
+  if (editedUserId === null) {
+    return;
+  }
+  const user = users.find((u) => u.id == editedUserId);
+  if (user) {
+    user.name = newNameInput.value;
+    user.email = newEmailInput.value;
+    user.age = newAgeInput.value;
+    updateLocalStorage();
+    //displayUser();
+    editedUserId = null;
+  }
 }
 function handleUserButtonsClick(e) {
   if (e.target.classList.contains("view-btn")) {
@@ -126,7 +136,11 @@ usersList.addEventListener("click", handleUserButtonsClick);
 //delete user
 let deleteUser = (e) => {
   const userId = parseInt(e.getAttribute("data-id"));
-  users = users.filter((user) => user.id !== userId);
+  if (confirm("Ви впевнені, що хочете видалити користувача?")) {
+    users = users.filter((user) => user.id !== userId);
+  }
   updateLocalStorage();
   displayUser(e);
 };
+btn.addEventListener("click", saveEditedUser);   
+displayUser();
