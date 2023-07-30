@@ -16,6 +16,7 @@ class user {
 let users = JSON.parse(localStorage.getItem("users")) || [];
 
 //add newUser + validation
+let editedUserId = null;
 function addNewUser() {
   const newName = newNameInput.value.trim();
   const newEmail = newEmailInput.value.trim();
@@ -40,13 +41,26 @@ function addNewUser() {
     console.log("successs");
     msg.innerHTML = "";
   }
-  const id = Date.now();
-  const newUser = new user(id, newName, newAge, newEmail);
-  users.push(newUser);
+  if (editedUserId === null) {
+    const id = Date.now();
+    const newUser = new user(id, newName, newAge, newEmail);
+        users.push(newUser);
+      } 
+    else {
+    const editedUser = users.find((u) => u.id == editedUserId);
+        if (editedUser) {
+          editedUser.name = newName;
+          editedUser.email = newEmail;
+          editedUser.age = newAge;
+          editedUserId = null;
+        }
+      }
   updateLocalStorage();
   acceptData();
   displayUser();
-  
+  resetForm();
+};
+function resetForm() {
   newNameInput.value = "";
   newEmailInput.value = "";
   newAgeInput.value = "";
@@ -77,8 +91,9 @@ let acceptData = () => {
 let displayUser = () => {
    usersList.innerHTML = "";
   users.forEach((user) => {
-    usersList.innerHTML += `
-    <h3>Список користувачів:</h3>
+    const userContainer = document.createElement("div");
+    userContainer.innerHTML = `
+    <h3>User:</h3>
           <p>${user.name}</p>
           <span class="options">
               <i  onClick="viewUser(this)" class="fas fa-eye " data-id="${user.id}"></i>
@@ -86,6 +101,7 @@ let displayUser = () => {
               <i onClick="deleteUser(this); displayUser()" class="fas fa-trash-alt " data-id="${user.id}"></i>
             </span>
         `;
+        usersList.appendChild(userContainer);
   });
 };
 //view user
@@ -99,9 +115,9 @@ function viewUser(userEl) {
 `;
 }
 // Редагування користувача
-let editedUserId = null;
+
 function editUser(userEl) {
-  const userId = userEl.dataset.id;
+  const userId = userEl.getAttribute("data-id");
   const user = users.find((u) => u.id == userId);
   if (user) {
     newNameInput.value = user.name;
@@ -115,13 +131,13 @@ function saveEditedUser() {
   if (editedUserId === null) {
     return;
   }
-  const user = users.find((u) => u.id == editedUserId);
+  const user = users.find((u) => u.id === editedUserId);
   if (user) {
     user.name = newNameInput.value;
     user.email = newEmailInput.value;
     user.age = newAgeInput.value;
     updateLocalStorage();
-    //displayUser();
+    displayUser();
     editedUserId = null;
   }
 }
@@ -129,6 +145,7 @@ function handleUserButtonsClick(e) {
   if (e.target.classList.contains("view-btn")) {
     viewUser(e.target);
   } else if (e.target.classList.contains("edit-btn")) {
+    e.preventDefault();
     editUser(e.target);
   }
 }
