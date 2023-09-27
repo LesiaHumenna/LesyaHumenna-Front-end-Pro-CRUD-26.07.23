@@ -5,7 +5,7 @@ const newAgeInput = document.getElementById("newAge");
 const msg = document.getElementById("msg");
 const usersList = document.getElementById("users");
 const btn = document.getElementById("btn");
-class user {
+class User {
   constructor(id, name, age, email) {
     this.id = id;
     this.name = name;
@@ -43,7 +43,7 @@ function addNewUser() {
   }
   if (editedUserId === null) {
     const id = Date.now();
-    const newUser = new user(id, newName, newAge, newEmail);
+    const newUser = new User(id, newName, newAge, newEmail);
         users.push(newUser);
       } 
     else {
@@ -59,7 +59,7 @@ function addNewUser() {
   acceptData();
   displayUser();
   resetForm();
-};
+}
 function resetForm() {
   newNameInput.value = "";
   newEmailInput.value = "";
@@ -85,7 +85,7 @@ let acceptData = () => {
   data["string"] = newEmailInput.value;
   data["number"] = newAgeInput.value;
   console.log(data);
-  displayUser(user);
+  displayUser(User);
 };
 //розмістити наші вхідні дані =>right
 let displayUser = () => {
@@ -125,7 +125,7 @@ function editUser(userEl) {
     newAgeInput.value = user.age;
     editedUserId = userId;
   }
-};
+}
 // Збереження змін
 function saveEditedUser() {
   if (editedUserId === null) {
